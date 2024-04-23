@@ -1,0 +1,112 @@
+<template>
+  <div style="background-color: #f8f8f8; min-height: 100vh">
+    <!--头部-->
+    <div class="front-header">
+      <div class="front-header-left">
+        <img src="@/assets/imgs/logo.png" alt="">
+        <div class="title">二手交易网</div>
+      </div>
+      <div class="front-header-center">
+        <div @click="$router.push(item.path)" class="menu" v-for="item in menus" :key="item.path"
+             :class="{'menu-active' : item.path === $route.path }">{{ item.text }}</div>
+      </div>
+      <div class="front-header-right">
+        <div v-if="!user.username">
+          <el-button @click="$router.push('/login')">登录</el-button>
+          <el-button @click="$router.push('/register')">注册</el-button>
+        </div>
+        <div v-else>
+          <el-dropdown>
+            <div class="front-header-dropdown">
+              <img :src="user.avatar" alt="" style="border-radius: 50%">
+              <div style="margin-left: 10px; color: #eee; cursor: pointer">
+                <span>{{ user.name }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
+              </div>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <div @click="$router.push('/front/person')">个人信息</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div @click="$router.push('/front/collect')">我的收藏</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div @click="$router.push('/front/address')">我的地址</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div style="text-decoration: none" @click="logout">退出登录</div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </div>
+    </div>
+    <!--主体-->
+    <div class="main-body">
+      <router-view ref="child" @update:user="updateUser" />
+    </div>
+
+    <Footer />
+
+  </div>
+</template>
+
+<script>
+import Footer from "@/components/Footer";
+export default {
+  name: "FrontLayout",
+  components: {
+    Footer
+  },
+  data () {
+    return {
+      notice: [],
+      user: JSON.parse(localStorage.getItem("xm-user") || '{}'),
+      menus: [
+        { text: '热卖专区', path: '/front/home' },
+        { text: '社区广场', path: '/front/posts' },
+        { text: '求购专区', path: '/front/helpView' },
+        { text: '系统公告', path: '/front/notice' },
+        { text: '留言反馈', path: '/front/feedback' },
+      ]
+    }
+  },
+
+  mounted() {
+
+  },
+  methods: {
+    updateUser() {
+      this.user = JSON.parse(localStorage.getItem('xm-user') || '{}')   // 重新获取下用户的最新信息
+    },
+    // 退出登录
+    logout() {
+      localStorage.removeItem("xm-user");
+      this.$router.push("/login");
+    },
+  }
+
+}
+</script>
+
+<style scoped>
+@import "@/assets/css/front.css";
+.front-header-center {
+  background: #2a60c9;
+  display: flex;
+  align-items: center; /* 如果你希望菜单项在垂直方向上居中 */
+  justify-content: center; /* 根据需要，你可以用flex-start, flex-end, center, space-between, space-around等值，这里用center是为了在父容器中水平居中 */
+}
+.menu {
+  color: #eee;
+  font-size: 16px;
+  padding: 0 20px;
+  cursor: pointer;
+}
+.menu:hover {
+  color: orange;
+}
+.menu-active {
+  color: orange;
+}
+</style>
