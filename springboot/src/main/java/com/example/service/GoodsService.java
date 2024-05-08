@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.common.enums.RoleEnum;
 import com.example.entity.Account;
 import com.example.entity.Collect;
 import com.example.entity.Goods;
@@ -32,6 +33,9 @@ public class GoodsService {
      * 新增
      */
     public void add(Goods goods) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        goods.setUserId(currentUser.getId());
+        System.out.println("------"+goods.getId()+goods.getName()+goods.getName());
         goodsMapper.insert(goods);
     }
     public void updateReadCount(Integer id) {
@@ -65,19 +69,32 @@ public class GoodsService {
      */
     public Goods selectById(Integer id) {
 
-        Goods goods =goodsMapper.selectById(id);
+        Goods goods = goodsMapper.selectById(id);
+
+        if (goods == null) {
+            // 处理goods为null的情况，例如抛出一个异常或返回null
+         System.out.println("No goods found with ID: " + id);
+        }
+
         Account currentUser = TokenUtils.getCurrentUser();
-        Likes likes =likesMapper.selectByUserIdAndFid(currentUser.getId(),id);
-        goods.setUserLike(likes!=null);
+        // 确保currentUser也不是null
+        if (currentUser == null) {
+            // 处理currentUser为null的情况
+            System.out.println("User must be logged in to access this information");
+        }
 
-        int likeCount =likesMapper.selectCountByFid(id);
-        goods.setLikesCount((likeCount));
+        assert currentUser != null;
+        Likes likes = likesMapper.selectByUserIdAndFid(currentUser.getId(), id);
+        assert goods != null;
+        goods.setUserLikes(likes != null);
+        int likesCount = likesMapper.selectCountByFid(id);
+        goods.setLikesCount(likesCount);
 
-       Collect collect =collectMapper.selectByUserIdAndFid(currentUser.getId(),id);
-        goods.setUserCollect(collect!=null);
+        Collect collect = collectMapper.selectByUserIdAndFid(currentUser.getId(), id);
+        goods.setUserCollect(collect != null);
+        int collectCount = collectMapper.selectCountByFid(id);
+        goods.setCollectCount(collectCount);
 
-        int collectCount =collectMapper.selectCountByFid(id);
-        goods.setCollectCount((collectCount));
         return goods;
     }
 
@@ -92,11 +109,13 @@ public class GoodsService {
      * 分页查询
      */
     public PageInfo<Goods> selectPage(Goods goods, Integer pageNum, Integer pageSize) {
+
         PageHelper.startPage(pageNum, pageSize);
         List<Goods> list = goodsMapper.selectAll(goods);
         return PageInfo.of(list);
     }
     public PageInfo<Goods> selectFrontPage(Goods goods, Integer pageNum, Integer pageSize) {
+
         PageHelper.startPage(pageNum, pageSize);
         List<Goods> list = goodsMapper.selectFrontAll(goods);
         return PageInfo.of(list);

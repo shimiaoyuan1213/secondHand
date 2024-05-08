@@ -34,6 +34,9 @@
                 <div @click="$router.push('/front/address')">我的地址</div>
               </el-dropdown-item>
               <el-dropdown-item>
+                <div @click="$router.push('/front/orders')">我的订单</div>
+              </el-dropdown-item>
+              <el-dropdown-item>
                 <div style="text-decoration: none" @click="logout">退出登录</div>
               </el-dropdown-item>
             </el-dropdown-menu>

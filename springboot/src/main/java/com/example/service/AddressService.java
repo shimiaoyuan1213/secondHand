@@ -54,6 +54,7 @@ public class AddressService {
      * 根据ID查询
      */
     public Address selectById(Integer id) {
+
         return addressMapper.selectById(id);
     }
 
@@ -72,6 +73,10 @@ public class AddressService {
      * 分页查询
      */
     public PageInfo<Address> selectPage(Address address, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if(RoleEnum.USER.name().equals(currentUser.getRole())) {
+            address.setUserId(currentUser.getId());
+        }
         PageHelper.startPage(pageNum, pageSize);
         List<Address> list = addressMapper.selectAll(address);
         return PageInfo.of(list);

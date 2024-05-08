@@ -30,6 +30,7 @@ public class AddressController {
     @PostMapping("/add")
     public Result add(@RequestBody Address address) {
         addressService.add(address);
+        System.out.println("添加成功 " +address.getId()+address.getName());
         return Result.success();
     }
 
@@ -75,10 +76,10 @@ public class AddressController {
     @GetMapping("/selectAll")
     public Result selectAll(Address address) {
 
-      /*  Account currentUser = TokenUtils.getCurrentUser();
+      Account currentUser = TokenUtils.getCurrentUser();
         if(RoleEnum.USER.name().equals(currentUser.getRole())){
          address.setUserId(currentUser.getId());
-        }*/
+        }
         List<Address> list = addressService.selectAll(address);
         return Result.success(list);
 

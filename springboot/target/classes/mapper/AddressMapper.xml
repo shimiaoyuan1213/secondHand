@@ -10,8 +10,9 @@
 
     <select id="selectAll" resultType="com.example.entity.Address">
         select
-        <include refid="Base_Column_List" />
+        address.*, user.name as userName
         from address
+        left join user on address.user_id = user.id
         <where>
             <if test="id != null"> and id = #{id}</if>
             <if test="name != null"> and name like concat('%', #{name}, '%')</if>

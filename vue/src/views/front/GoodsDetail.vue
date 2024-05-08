@@ -42,7 +42,12 @@
             <el-radio v-for="item in addressList" :key="item.id" :label="item.id" style="margin-bottom: 10px">
               {{ item.name + ' ' + item.address + ' ' + item.phone }}
             </el-radio>
+
           </el-radio-group>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="fromVisible1=false">取 消</el-button>>
+          <el-button type="primary" @click="addOrders">确 定</el-button>>
         </div>
       </el-dialog>
 
@@ -76,11 +81,39 @@ export default {
   },
   methods: {
 
-    loadAddress(){
-      this.$request.get('/address/selectAll').then(res=>{
-        console.log(res)
-        this.addressList=res.data || []
-      })
+    addOrders() {
+      this.form.goodsId=this.id
+      this.$request.post('/orders/add',this.form).then(res => {
+
+        if (res.code==='200' ) {
+          console.log('add Data:', res.data); // 这将显示data属性的实际内容
+          this.$message.success("下单成功")
+          this.$router.push('/front/orders')
+        } else {
+          // 处理错误或数据不存在的情况
+          console.error('No  found');
+        }
+      }).catch(error => {
+        // 处理请求错误
+        console.error('Request failed', error);
+      });
+    },
+
+
+    loadAddress() {
+      this.$request.get('/address/selectAll').then(res => {
+        console.log('Response:', res);
+        if (res && res.data) {
+          console.log('Address Data:', res.data); // 这将显示data属性的实际内容
+          this.addressList = res.data;
+        } else {
+          // 处理错误或数据不存在的情况
+          console.error('No address data found');
+        }
+      }).catch(error => {
+        // 处理请求错误
+        console.error('Request failed', error);
+      });
     },
     handleBuy(){
       this.form={}

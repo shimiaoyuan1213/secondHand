@@ -40,6 +40,7 @@ const routes = [
       { path: 'goodsDetail', component: () => import('../views/front/GoodsDetail') },
       { path: 'collect', component: () => import('../views/front/Collect')},
       { path: 'address', component: () => import('../views/front/Address')},
+      { path: 'orders', component: () => import('../views/front/Orders')},
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

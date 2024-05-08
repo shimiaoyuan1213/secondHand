@@ -48,9 +48,12 @@ public class Goods implements Serializable {
         return userLikes;
     }
 
-    public void setUserLikes(boolean userLikes) {
-        this.userLikes = userLikes;
+    public boolean isUserCollect() {
+        return userCollect;
     }
+
+
+
 
     public String getSort() {
         return Sort;
@@ -74,7 +77,7 @@ public class Goods implements Serializable {
         return userLikes;
     }
 
-    public void setUserLike(boolean userLike) {
+    public void setUserLikes(boolean userLike) {
         this.userLikes = userLike;
     }
 
